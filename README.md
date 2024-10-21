@@ -3,7 +3,7 @@ Model Development — ENERgy consumption of the WATer sector : GLOBal
 
 Contact: m.magni@uu.nl
 
-Inputs and outputs are available on Zenodo ([inputs]{https://doi.org/10.5281/zenodo.13961187}, [outputs]{https://doi.org/10.5281/zenodo.13961387}), with the exception of DesalData which is a licensed database. 
+Inputs and outputs are available on Zenodo ([inputs](https://doi.org/10.5281/zenodo.13961187), [outputs](https://doi.org/10.5281/zenodo.13961387)), with the exception of DesalData which is a licensed database. 
 
 ## Content
 #### 1. Tools
