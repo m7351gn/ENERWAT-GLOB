@@ -225,26 +225,35 @@ treatment.countries.energy <- treatment.countries %>%
          energy.total.mean.ej = energy.total.mean.kwh / 10^9 * 3.6 * 10^(-3),
          energy.total.high.ej = energy.total.high.kwh / 10^9 * 3.6 * 10^(-3))
 
-sum(treatment.countries.energy$energy.total.low) / 10^9 #TWh
-sum(treatment.countries.energy$energy.total.high) / 10^9 #TWh
-sum(treatment.countries.energy$energy.total.low) / 10^9 * 3.6 * 10^(-3) #EJ
-sum(treatment.countries.energy$energy.total.high) / 10^9 * 3.6 * 10^(-3) #EJ
+
+# energy.total.countries <- treatment.countries.energy %>% 
+#   select(Country, energy.total.low.ej, energy.total.high.ej) %>% 
+#   mutate(energy.total.mean.ej = (energy.total.low.ej + energy.total.high.ej) / 2)
+
+#### add world total volumes and data ####
+world.sums <- t(as.data.frame(
+  colSums(treatment.countries.energy %>% select(-Country))))
+world.string <- 'World'
+world.row <- cbind(world.string, world.sums)
+row.names(world.row) <- NULL
+colnames(world.row)[1] <- 'Country'
+
+energy.country.use.world <- rbind(world.row, treatment.countries.energy)
+
+vroom_write(
+  energy.country.use.world, paste0(outputDir, 'energy_countries_2015_dwt.csv'),
+  delim = ',' )
+
+# write.csv(treatment.countries.energy, 
+#           paste0(outputDir, 'energy_countries_2015_dwt.csv'),
+#           row.names = F)
 
 
-energy.total.countries <- treatment.countries.energy %>% 
-  select(Country, energy.total.low.ej, energy.total.high.ej) %>% 
-  mutate(energy.total.mean.ej = (energy.total.low.ej + energy.total.high.ej) / 2)
 
 
-write.csv(treatment.countries.energy, 
-          paste0(outputDir, 'energy_countries_2015_dwt.csv'),
-          row.names = F)
-
-
-#modelled electricity 
-country.energy.model <- read.csv(paste0(outputDir, 'energy_countries_2015_dwt.csv')) 
 
 #### ratios ####
+country.energy.model <- read.csv(paste0(outputDir, 'energy_countries_2015_dwt.csv')) 
 
 countries.with.data.primary <- inner_join(country.energy.model, eia.primary.energy)
 countries.with.data.electricity <- inner_join(country.energy.model, eia.electricity)
@@ -262,5 +271,3 @@ countries.ratios <- inner_join(countries.with.data.primary,
 write.csv(countries.ratios, paste0(outputDir, 'energy_countries_2015_dwt.csv'),
           row.names = F)
 
-sum(countries.ratios$energy.total.low.ej)
-sum(countries.ratios$energy.total.high.ej)
