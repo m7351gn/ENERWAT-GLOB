@@ -2,11 +2,11 @@ library(dplyr)
 library(tidyr)
 library(vroom)
 
-inputDir   <- '../../../../output/water_treatment/model/desalination/'
-outputDir <- '../../../../output/water_treatment/model/desalination/'
+inputDir   <- '../../../../output/water_treatment/model/desalination/0_tech_categories/'
+outputDir <- '../../../../output/water_treatment/model/desalination/1_cumulative/'
 
 #### load ####
-desalData.energy <- read.csv(paste0(inputDir, 'DesalDataEnergy_online.csv')) %>%
+desalData.energy <- read.csv(paste0(inputDir, 'DesalDataEnergy_online_2019.csv')) %>%
   mutate(Online.date=as.Date(paste(Online.date, 1, 1, sep = "-"))) 
 
 desalData.energy.RO <- vroom(

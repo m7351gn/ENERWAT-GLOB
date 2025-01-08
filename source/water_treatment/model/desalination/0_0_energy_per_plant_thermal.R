@@ -4,7 +4,7 @@
 library(dplyr)
 
 inputDir <- '../../../../input/water_treatment/desalination/'
-outputDir <- '../../../../output/water_treatment/model/desalination/'
+outputDir <- '../../../../output/water_treatment/model/desalination/0_tech_categories/'
 
 dir.create(outputDir, recursive = T, showWarnings = F)
 

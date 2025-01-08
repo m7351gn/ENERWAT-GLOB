@@ -27,17 +27,29 @@ energy.data <- read.csv(
 
 #### generate COD parameter per plant #### 
 # start with simple 60 g cod / d capita
-plants.online$COD <- plants.online$population_5arcmin * 60
+plants.online$COD.low <- plants.online$population_5arcmin * 50
+plants.online$COD.mean <- plants.online$population_5arcmin * 70
+plants.online$COD.high <- plants.online$population_5arcmin * 120
 
 # 120 g cod / d capita for US and Canada
-plants.online$COD[
+plants.online$COD.low[
+  plants.online$Country == 'Canada' | plants.online$Country == 'United States'] <- 
+  plants.online$population_5arcmin[
+    plants.online$Country == 'Canada' | plants.online$Country == 'United States'] * 90
+
+plants.online$COD.mean[
   plants.online$Country == 'Canada' | plants.online$Country == 'United States'] <- 
   plants.online$population_5arcmin[
     plants.online$Country == 'Canada' | plants.online$Country == 'United States'] * 120
 
+plants.online$COD.high[
+  plants.online$Country == 'Canada' | plants.online$Country == 'United States'] <- 
+  plants.online$population_5arcmin[
+    plants.online$Country == 'Canada' | plants.online$Country == 'United States'] * 160
+
 #### standardize units in plants.online flows to day: volume [m3/d], COD [g/d] ####
 plants.online$Average.flowrate..m3.d. <- plants.online$flow_5arcmin * 10^9 / 365 
-plants.online$Influent..COD..g.d <- plants.online$COD 
+# plants.online$Influent..COD..g.d.low <- plants.online$COD.low
 
 #set dataframe to work with energy values
 plants.online.energy <- plants.online
@@ -75,13 +87,28 @@ mlr.model.ro <- lm(log(Total.electricity.consumption..kWh.d.) ~
 # summary(mlr.model.ro)
 
 #### predict energy use values for SECONDARY TREATMENT (log!!!) ####
-predict.wwt.energy <- as_tibble(predict(mlr.model.ro, plants.online,
-                                        interval = "confidence", level = 0.95))
+#### and now we have it for 3 COD values and 3 predicted values -> 9 total values
+#### uncertainty from mlr AND from COD
+
+predict.wwt.energy.cod.low <- as_tibble(
+  predict(mlr.model.ro, plants.online %>% 
+            rename(Influent..COD..g.d = COD.low), 
+          interval = "confidence", level = 0.95))
+
+predict.wwt.energy.cod.mean <- as_tibble(
+  predict(mlr.model.ro, plants.online %>% 
+            rename(Influent..COD..g.d = COD.mean), 
+          interval = "confidence", level = 0.95))
+
+predict.wwt.energy.cod.high <- as_tibble(
+  predict(mlr.model.ro, plants.online %>% 
+            rename(Influent..COD..g.d = COD.high), 
+          interval = "confidence", level = 0.95))
 
 #bind to plant -> ELEVATING EXP(PREDICTED)
-plants.online.energy$secondary.low <- exp(predict.wwt.energy$lwr)
-plants.online.energy$secondary.mean <- exp(predict.wwt.energy$fit)
-plants.online.energy$secondary.high <- exp(predict.wwt.energy$upr)
+plants.online.energy$secondary.low <- exp(predict.wwt.energy.cod.low$lwr)
+plants.online.energy$secondary.mean <- exp(predict.wwt.energy.cod.mean$fit)
+plants.online.energy$secondary.high <- exp(predict.wwt.energy.cod.high$upr)
 
 
 #### advanced wwt - phosphorus and nitrogen removal ####
@@ -110,17 +137,6 @@ plants.online.energy$advanced.p.mean <-
   plants.online.energy$Average.flowrate..m3.d. * advanced.p.mean
 plants.online.energy$advanced.p.high <- 
   plants.online.energy$Average.flowrate..m3.d. * advanced.p.high
-
-
-
-# #### divide by level ###
-# plants.online.primary <- plants.online %>% 
-#   filter(LEVEL == 'Primary')
-# plants.online.secondary <- plants.online %>% 
-#   filter(LEVEL == 'Secondary')
-# plants.online.advanced <- plants.online %>% 
-#   filter(LEVEL == 'Advanced')
-
 
 
 #### assign energy use depending on level in plants.online ####
@@ -181,11 +197,13 @@ plants.online.energy$ej.y.high <- plants.online.energy$twh.y.high * 3.6 * 10^(-3
 
 
 #### country energy use #### 
-energy.country.use <- plants.online.energy %>%
-  group_by(Country) %>%
+energy.country.use.levels <- plants.online.energy %>%
+  group_by(Country, LEVEL) %>%
   summarise(wwt.km3.y = sum(flow_5arcmin),
             pop.connected.2015 = sum(population_5arcmin),
-            COD.kg.y = sum(COD * 365 / 1000),
+            COD.kg.y.low = sum(COD.low * 365 / 1000),
+            COD.kg.y.mean = sum(COD.mean * 365 / 1000),
+            COD.kg.y.high = sum(COD.high * 365 / 1000),
             kwh.y.low = sum(kwh.y.low),
             kwh.y.mean = sum(kwh.y.mean),
             kwh.y.high = sum(kwh.y.high),
@@ -201,27 +219,168 @@ energy.country.use <- plants.online.energy %>%
   mutate(kwh.m3.low = kwh.y.low / (wwt.km3.y * 1000000000),
          kwh.m3.mean = kwh.y.mean / (wwt.km3.y * 1000000000),
          kwh.m3.high = kwh.y.high / (wwt.km3.y * 1000000000),
-         kwh.kgCODin.low = kwh.y.low / (COD.kg.y),
-         kwh.kgCODin.mean = kwh.y.mean / (COD.kg.y),
-         kwh.kgCODin.high = kwh.y.high / (COD.kg.y)
+         kwh.kgCODin.low = kwh.y.low / (COD.kg.y.low),
+         kwh.kgCODin.mean = kwh.y.mean / (COD.kg.y.mean),
+         kwh.kgCODin.high = kwh.y.high / (COD.kg.y.high)
          
          ) 
 
-#### add world total volumes and data ####
-world.sums <- t(as.data.frame(
-  colSums(energy.country.use %>% select(-Country))))
-world.means <- t(as.data.frame(
-  colMeans(energy.country.use %>% select(-Country))))
-world.sums.to.use <- t(as.data.frame(world.sums[, 1:12]))
-world.means.to.use <- t(as.data.frame(world.means[, 13:18]))
-world.string <- 'World'
+energy.country.use.all <- plants.online.energy %>%
+  group_by(Country) %>%
+  summarise(wwt.km3.y = sum(flow_5arcmin),
+            pop.connected.2015 = sum(population_5arcmin),
+            COD.kg.y.low = sum(COD.low * 365 / 1000),
+            COD.kg.y.mean = sum(COD.mean * 365 / 1000),
+            COD.kg.y.high = sum(COD.high * 365 / 1000),
+            kwh.y.low = sum(kwh.y.low),
+            kwh.y.mean = sum(kwh.y.mean),
+            kwh.y.high = sum(kwh.y.high),
+            twh.y.low = sum(twh.y.low),
+            twh.y.mean = sum(twh.y.mean),
+            twh.y.high = sum(twh.y.high),
+            ej.y.low = sum(ej.y.low),
+            ej.y.mean = sum(ej.y.mean),
+            ej.y.high = sum(ej.y.high)
+            
+  ) %>%
+  
+  mutate(kwh.m3.low = kwh.y.low / (wwt.km3.y * 1000000000),
+         kwh.m3.mean = kwh.y.mean / (wwt.km3.y * 1000000000),
+         kwh.m3.high = kwh.y.high / (wwt.km3.y * 1000000000),
+         kwh.kgCODin.low = kwh.y.low / (COD.kg.y.low),
+         kwh.kgCODin.mean = kwh.y.mean / (COD.kg.y.mean),
+         kwh.kgCODin.high = kwh.y.high / (COD.kg.y.high)
+         
+  ) %>% 
+  mutate(LEVEL = 'All') %>% relocate(LEVEL, .after='Country')
 
-world.row <- cbind(world.string, world.sums.to.use, world.means.to.use)
+energy.country.use <- bind_rows(energy.country.use.levels, 
+                                energy.country.use.all) %>% 
+  arrange(Country)
 
-row.names(world.row) <- NULL
-colnames(world.row)[1] <- 'Country'
+#### add world total volumes or mean intensities and data ####
+#### must filter by level or totals will be wrong
+world.sums.all <- t(as.data.frame(
+  colSums(energy.country.use  %>% 
+            filter(LEVEL == 'All') %>% 
+            ungroup() %>% 
+            dplyr::select(-c(Country, LEVEL)))))
 
-energy.country.use.world <- rbind(world.row, energy.country.use)
+world.means.all <- t(as.data.frame(
+  colMeans(energy.country.use %>% 
+            filter(LEVEL == 'All') %>% 
+            ungroup() %>% 
+            select(-c(Country, LEVEL)))))
+
+world.sums.primary <- t(as.data.frame(
+  colSums(energy.country.use %>% 
+            filter(LEVEL == 'Primary') %>% 
+            ungroup() %>% 
+            select(-c(Country, LEVEL)))))
+
+world.means.primary <- t(as.data.frame(
+  colMeans(energy.country.use %>% 
+             filter(LEVEL == 'Primary') %>% 
+             ungroup() %>% 
+             select(-c(Country, LEVEL)))))
+
+world.sums.secondary <- t(as.data.frame(
+  colSums(energy.country.use %>% 
+            filter(LEVEL == 'Secondary') %>% 
+            ungroup() %>% 
+            select(-c(Country, LEVEL)))))
+
+world.means.secondary <- t(as.data.frame(
+  colMeans(energy.country.use %>% 
+             filter(LEVEL == 'Secondary') %>% 
+             ungroup() %>% 
+             select(-c(Country, LEVEL)))))
+
+world.sums.advanced <- t(as.data.frame(
+  colSums(energy.country.use %>% 
+            filter(LEVEL == 'Advanced') %>% 
+            ungroup() %>% 
+            select(-c(Country, LEVEL)))))
+
+world.means.advanced <- t(as.data.frame(
+  colMeans(energy.country.use %>% 
+             filter(LEVEL == 'Advanced') %>% 
+             ungroup() %>% 
+             select(-c(Country, LEVEL)))))
+
+
+#### get levels rows and total row for the global totals and means
+world.sums.to.use.all <- t(as.data.frame(world.sums.all[, 1:14]))
+world.means.to.use.all <- t(as.data.frame(world.means.all[, 15:20]))
+group.strings.all <- t(c('World', 'All'))
+
+world.sums.to.use.primary <- t(as.data.frame(world.sums.primary[, 1:14]))
+world.means.to.use.primary <- t(as.data.frame(world.means.primary[, 15:20]))
+group.strings.primary <- t(c('World', 'Primary'))
+
+world.sums.to.use.secondary <- t(as.data.frame(world.sums.secondary[, 1:14]))
+world.means.to.use.secondary <- t(as.data.frame(world.means.secondary[, 15:20]))
+group.strings.secondary <- t(c('World', 'Secondary'))
+
+world.sums.to.use.advanced <- t(as.data.frame(world.sums.advanced[, 1:14]))
+world.means.to.use.advanced <- t(as.data.frame(world.means.advanced[, 15:20]))
+group.strings.advanced <- t(c('World', 'Advanced'))
+
+world.row.all <- cbind(group.strings.all, 
+                       world.sums.to.use.all, 
+                       world.means.to.use.all)
+
+world.row.primary <- cbind(group.strings.primary, 
+                           world.sums.to.use.primary, 
+                           world.means.to.use.primary)
+
+world.row.secondary <- cbind(group.strings.secondary, 
+                           world.sums.to.use.secondary, 
+                           world.means.to.use.secondary)
+
+world.row.advanced <- cbind(group.strings.advanced, 
+                           world.sums.to.use.advanced, 
+                           world.means.to.use.advanced)
+
+row.names(world.row.all) <- NULL
+row.names(world.row.primary) <- NULL
+row.names(world.row.secondary) <- NULL
+row.names(world.row.advanced) <- NULL
+
+colnames(world.row.all)[1:2] <- c('Country', 'LEVEL')
+colnames(world.row.primary)[1:2] <- c('Country', 'LEVEL')
+colnames(world.row.secondary)[1:2] <- c('Country', 'LEVEL')
+colnames(world.row.advanced)[1:2] <- c('Country', 'LEVEL')
+
+
+#### bind world rows together with countries
+#### now split amongst levels: all, primary, secondary, advanced
+#### good for plotting
+
+energy.country.use.world <- data.frame(rbind(world.row.all,
+                                  world.row.primary) %>% 
+  rbind(., world.row.secondary) %>% 
+  rbind(., world.row.advanced)) %>% 
+  rbind(., energy.country.use)
+  
+
+#### retain kwh.kgCODin only for secondary treatment (nonsensical for other levels)
+energy.country.use.world$kwh.kgCODin.low[
+  energy.country.use.world$LEVEL == 'All' | 
+    energy.country.use.world$LEVEL == 'Primary' | 
+    energy.country.use.world$LEVEL == 'Advanced' 
+] <- NA
+energy.country.use.world$kwh.kgCODin.mean[
+  energy.country.use.world$LEVEL == 'All' | 
+    energy.country.use.world$LEVEL == 'Primary' | 
+    energy.country.use.world$LEVEL == 'Advanced' 
+] <- NA
+energy.country.use.world$kwh.kgCODin.high[
+  energy.country.use.world$LEVEL == 'All' | 
+    energy.country.use.world$LEVEL == 'Primary' | 
+    energy.country.use.world$LEVEL == 'Advanced' 
+] <- NA
+
 
 #### save plants and countries tables ####
 vroom_write(

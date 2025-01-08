@@ -1,8 +1,10 @@
 library(dplyr)
 library(vroom)
 
-inputDir   <- '../../../../output/water_treatment/model/desalination/'
-outputDir <- '../../../../output/water_treatment/model/desalination/'
+inputDir   <- '../../../../output/water_treatment/model/desalination/0_tech_categories/'
+outputDir <- '../../../../output/water_treatment/model/desalination/1_cumulative/'
+
+dir.create(outputDir, recursive = T, showWarnings = F)
 
 #### load dataframes ####
 
@@ -33,9 +35,6 @@ desalData.energy.RO.current <- desalData.energy.RO %>%
 desal.thermal.ro.ed <- rbind(desalData.energy.thermal, 
                              desalData.energy.RO.current, 
                              desalData.energy.ED)
-
-write.csv(desal.thermal.ro.ed, paste0(inputDir, 'DesalDataEnergy_online.csv'), 
-          row.names = F)
 
 
 #### filter by tech ####
@@ -154,9 +153,14 @@ RO.E <- desalData.energy.RO %>%
           rename(year.exponential = Online.date), ., all=T) %>% 
   filter(year.exponential <= max(desalData.energy.RO$Online.date)) %>%
   replace(is.na(.),0) %>%
+  
+  #### it's not cumulative here because it's already cumulative in the previous dataset
+  #### every year plants from the previous year remain but with lower energy use
+  #### this is also why the final energy use is lower in 2019 than 2018
   mutate(cum.kwh.d.low=kwh.d.low) %>%
   mutate(cum.kwh.d.mean=kwh.d.mean) %>%
   mutate(cum.kwh.d.high=kwh.d.high) %>%
+
   mutate(cum.kwh.y.low=cum.kwh.d.low * 365) %>%
   mutate(cum.kwh.y.mean=cum.kwh.d.mean * 365) %>%
   mutate(cum.kwh.y.high=cum.kwh.d.high * 365) %>%
@@ -185,7 +189,7 @@ cum.energy.years <- years_range_desalData
 cum.all.tech.kwh.d.low <- MSF.E$kwh.d.low + MED.all.E$kwh.d.low + 
   RO.E$kwh.d.low + ED.E$kwh.d.low
 cum.all.tech.kwh.d.mean <- MSF.E$kwh.d.mean + MED.all.E$kwh.d.mean + 
-  RO.E$kwh.d.mean + + ED.E$kwh.d.mean
+  RO.E$kwh.d.mean + ED.E$kwh.d.mean
 cum.all.tech.kwh.d.high <- MSF.E$kwh.d.high + MED.all.E$kwh.d.high + 
   RO.E$kwh.d.high + ED.E$kwh.d.high
 
@@ -257,7 +261,7 @@ energy.plot.data <- rbind(cum.energy.all.tech.frame %>%
 
 
 #### save ####
-#tables
+#tables tech
 capacity.table <- capacity.plot.data %>%
   mutate(Online.date = format(as.Date(Online.date, format="%d/%m/%Y"),"%Y")) %>% 
   relocate(ratio.capacity, .after = cum.million.m3.d) %>% 
@@ -273,4 +277,8 @@ write.csv(capacity.table,
           row.names = F)
 write.csv(energy.table,
            paste0(outputDir, 'cumulative_energy_1945_2019_tech.csv'),
+          row.names = F)
+
+#all online plants
+write.csv(desal.thermal.ro.ed, paste0(inputDir, 'DesalDataEnergy_online_2019.csv'), 
           row.names = F)

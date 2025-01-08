@@ -4,7 +4,7 @@ library(dplyr)
 
 #### load ####
 inputDir <- '../../../../input/water_treatment/desalination/'
-outputDir <- '../../../../output/water_treatment/model/desalination/'
+outputDir <- '../../../../output/water_treatment/model/desalination/0_tech_categories/'
 
 DesalData <- read.csv(paste0(inputDir, 'DesalData_2019_ID_renamed_countries.csv')) 
 

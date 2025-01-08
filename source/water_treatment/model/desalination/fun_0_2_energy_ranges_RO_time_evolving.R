@@ -154,7 +154,10 @@ energy.data$Prediction[energy.data$Feedwater == 'Brine'] <-
 energy.data$Upper[energy.data$Feedwater == 'Brine'] <-
   energy.data$Upper[energy.data$Feedwater == 'Brine'] + 6.7
 
-#### save things ####
+# table.data <- energy.data %>% 
+#   filter(Year == as.Date(paste(2019, 1, 1, sep = "-")))
+
+# #### save things ####
 write.csv(energy.data %>%
             relocate(Year, .before = Prediction),
           paste0(outputDir, 'RO_time_evolving_all_feeds.csv'), row.names = F)

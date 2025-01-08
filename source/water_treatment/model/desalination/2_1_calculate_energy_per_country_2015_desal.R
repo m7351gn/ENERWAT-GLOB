@@ -4,13 +4,12 @@ library(dplyr)
 
 #### input files ####
 inputDirWorld <- '../../../../input/global_data/'
-inputDirEnergy <- '../../../../output/water_treatment/model/desalination/'
-outputDir <- '../../../../output/water_treatment/visualization/general/'
+inputDirEnergy <- '../../../../output/water_treatment/model/desalination/2_energy/'
 
 country.region.data <- read.csv(paste0(inputDirWorld, 'countries_id_regions.csv'))
 
 plants.online <- read.csv(
-  paste0(inputDirEnergy, 'DesalDataEnergy_online_2015.csv')) 
+  paste0(inputDirEnergy, 'energy_plants_2015_desal.csv')) 
 
 #primary energy 
 eia.primary.energy <- read.csv(paste0(
@@ -60,10 +59,10 @@ country.energy.model <- rbind(world.row, energy.country.use)
 
 #### save and remove temp (for string to numeric) ####
 write.csv(
-  country.energy.model, paste0(outputDir, 'energy_countries_2015_desalination.csv'),
+  country.energy.model, paste0(inputDirEnergy, 'energy_countries_2015_desalination.csv'),
   row.names = F)
 
-country.energy.model <- read.csv(paste0(outputDir, 'energy_countries_2015_desalination.csv')) 
+country.energy.model <- read.csv(paste0(inputDirEnergy, 'energy_countries_2015_desalination.csv')) 
 
 #### calculate country and global ratios ####
 countries.with.data.primary <- inner_join(country.energy.model, eia.primary.energy)
@@ -79,7 +78,7 @@ countries.ratios <- inner_join(countries.with.data.primary,
          ratio.electricity.high = (twh.y.high / X2015.net.electricity.twh) * 100)
 
 
-write.csv(countries.ratios, paste0(outputDir, 'energy_countries_2015_desalination.csv'),
+write.csv(countries.ratios, paste0(inputDirEnergy, 'energy_countries_2015_desalination.csv'),
           row.names = F)
 
 

@@ -1,11 +1,12 @@
 library(dplyr)
 
+inputDir   <- '../../../../output/water_treatment/model/desalination/0_tech_categories/'
+outputDir <- '../../../../output/water_treatment/model/desalination/2_energy/'
 
-inputDir   <- '../../../../output/water_treatment/model/desalination/'
-outputDir <- '../../../../output/water_treatment/model/desalination/'
+dir.create(outputDir, recursive = T, showWarnings = F)
 
 #### load dataframes ####
-DesalData.2019 <- read.csv(paste0(inputDir, 'DesalDataEnergy_online.csv'))
+DesalData.2019 <- read.csv(paste0(inputDir, 'DesalDataEnergy_online_2019.csv'))
   
 plants.online.energy <- DesalData.2019 %>% 
   filter(Online.date <= as.Date(paste(2015, 1, 1, sep = "-")))
@@ -28,5 +29,5 @@ plants.online.energy$ej.y.low <- plants.online.energy$twh.y.low * 3.6 / 10^3
 plants.online.energy$ej.y.mean <- plants.online.energy$twh.y.mean * 3.6 / 10^3
 plants.online.energy$ej.y.high <- plants.online.energy$twh.y.high * 3.6 / 10^3
 
-write.csv(plants.online.energy, paste0(outputDir, 'DesalDataEnergy_online_2015.csv'), 
+write.csv(plants.online.energy, paste0(outputDir, 'energy_plants_2015_desal.csv'), 
           row.names = F)
