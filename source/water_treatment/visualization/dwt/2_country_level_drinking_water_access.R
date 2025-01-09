@@ -92,6 +92,8 @@ map.urban.access <- ggplot()+
   guides(fill = guide_colourbar(title.position="top")) +
   theme(plot.title = element_text(hjust = 0.5, size = 22)) 
 
+
+
 #### patch 4 panel ####
 pp.patch <- (map.safe.access + map.basic.access) /
   (map.rural.access + map.urban.access) +
@@ -107,5 +109,5 @@ pp.patch <- (map.safe.access + map.basic.access) /
 
 ggsave(paste0(outputDir, 'country_water_access_maps.png'), pp.patch,
        height=10, width=13, units='in', dpi=300, bg='white')
-
+#
 file.show(paste0(outputDir, 'country_water_access_maps.png'))

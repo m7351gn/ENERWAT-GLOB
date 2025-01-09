@@ -52,7 +52,6 @@ municipal.demands.plot <- ggplot()+
   ) +
   theme_map() +
   ggtitle('A. Municipal water demands (5arcmin, 2015)') +
-  # xlim(-180,180)
   ylim(-55,80)+
   guides(fill = guide_colourbar(title.position="top")) +
   theme(legend.title = element_markdown(hjust=0.5, size=18),
@@ -82,7 +81,6 @@ desal.drinking.plot <- ggplot() +
                       guide = 'none', trans = 'log10', direction = -1) +
   theme_map() +
   ggtitle('B. Desalination (drinking)') +
-  # xlim(-180,180)
   ylim(-55,80)+
   guides(fill = guide_colourbar(title.position="top")) +
   theme(legend.title = element_markdown(hjust=0.5, size=18),
@@ -116,6 +114,7 @@ sw.plot <- ggplot() +
   ) +
   theme_map() +
   ggtitle('C. Surface water') +
+  # xlim(-180,180)
   ylim(-55,80)+
   guides(fill = guide_colourbar(title.position="top")) +
   theme(legend.title = element_markdown(hjust=0.5, size=18),
@@ -193,7 +192,6 @@ fgw.plot <- ggplot() +
         legend.text = element_text(size=16),
         legend.key.width = unit(1.7, "cm"),
         plot.title = element_text(hjust = 0.5, size = 24))
-
 
 
 sources.grid <- ((desal.drinking.plot + sw.plot) / (rgw.plot + fgw.plot)) + 

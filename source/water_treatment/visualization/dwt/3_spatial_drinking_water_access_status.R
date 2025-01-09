@@ -192,6 +192,8 @@ p.patch <- (access.rural.plot / access.urban.plot) +
                   theme = theme(plot.title = element_text(hjust = 0.5 , size = 24))) &
   theme(legend.position = 'bottom')
 
+
+
 ggsave(paste0(outputDir, 'water_access_maps.png'), p.patch,
        height=13, width=12, units='in', dpi=300, bg='white')
 

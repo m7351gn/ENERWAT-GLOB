@@ -174,7 +174,6 @@ df.all.sources.regions <- df.all.sources %>%
          vol.ratio.untreated.gw = volumes_total_untreated_gw / vol_total * 100
          )
             
-
 #### make dfs for plots, first select and then melt ####
 #population absolute
 plot.df.pop.abs <- df.all.sources.regions %>% 
@@ -382,14 +381,16 @@ p.pop.ratio <- ggplot(plot.df.melted.pop.ratio,
   ylab('Population ratio (%)') +
   labs(fill = 'Status') +
   theme_light() +
-  guides(fill = guide_legend(ncol = 1)) +
+  guides(fill = guide_legend(ncol = 1, title.position = 'top')) +
   theme(axis.text = element_text(size = 18),
         axis.title.y = element_text(size = 24),
         axis.title.x = element_text(size = 24,
                                     margin = margin(t = 20, r = 0, b = 10, l = 0)),
         legend.text=element_text(size=22),
-        legend.title = element_blank(),
-        legend.spacing = unit(1, 'cm')
+        legend.title = element_text(size = 24, hjust = 0.5,
+                                    margin = margin(t = 0, r = 0, b = 15, l = 0)),
+        legend.spacing = unit(1, 'cm'),
+        legend.position = 'bottom'
         )
 
 p.vol.abs <- ggplot(plot.df.melted.vol.abs, 
@@ -405,7 +406,7 @@ p.vol.abs <- ggplot(plot.df.melted.vol.abs,
                                'Conventional GWT'
   ) ,
   values = palette.volumes, guide="none") +
-  ylab('<br />Volume (km<sup>3</sup>) <br />') +
+  ylab('<br />Volumes (km<sup>3</sup> y<sup>-1</sup>) <br />') +
   ggtitle('B. Modelled drinking water sources (2015)') +
   labs(fill = 'Source') +
   theme_light() +
@@ -413,7 +414,8 @@ p.vol.abs <- ggplot(plot.df.melted.vol.abs,
         axis.text.x = element_blank(),
         plot.title = element_text(hjust = 0.5, size = 28),
         axis.text = element_text(size = 18),
-        axis.title.y = element_markdown(size = 24)
+        axis.title.y = element_markdown(size = 24),
+        legend.position = 'bottom'
         ) +
   scale_y_continuous(position = "right")
 
@@ -433,15 +435,17 @@ p.vol.ratio <- ggplot(plot.df.melted.vol.ratio,
   xlab('Subregion') +
   ylab('\nVolumetric ratio (%)') +
   labs(fill = 'Source') +
-  guides(fill = guide_legend(ncol = 2)) +
+  guides(fill = guide_legend(ncol = 2, title.position = 'top')) +
   theme_light() +
   theme(axis.text = element_text(size = 18),
         axis.title.y = element_text(size = 24),
         axis.title.x = element_text(size = 24,
                                     margin = margin(t = 20, r = 0, b = 10, l = 0)),
         legend.text=element_text(size=22, margin = margin(r = 10, l=5, unit = "pt")),
-        legend.title = element_blank(),
-        legend.spacing = unit(1, 'cm')
+        legend.title = element_text(size = 24, hjust = 0.5,
+                                    margin = margin(t = 0, r = 0, b = 15, l = 0)),
+        legend.spacing = unit(1, 'cm'),
+        legend.position = 'bottom'
         ) +
   scale_y_continuous(position = "right")
 
@@ -453,102 +457,24 @@ p.energy <- ggplot(data = df.plot.energy.cleaned, aes(x=REGION_WB_SHORT, y=mean,
   scale_fill_manual(values = palette.energy) +
   theme_light() +
   xlab('Subregion') +
-  ylab("TWh") +
+  ylab("TWh y<sup>-1</sup>") +
   ggtitle('\n\nC. Energy consumption of conventional drinking water treatment (2015)') +
   theme(plot.title = element_text(hjust = 0.5, size = 28),
         axis.text = element_text(size = 18),
-        axis.title.y = element_text(size = 24),
+        axis.title.y = element_markdown(size = 24),
         axis.title.x = element_text(size = 24,
                                     margin = margin(t = 20, r = 0, b = 10, l = 0)),
         legend.text=element_text(size=22),
         legend.title = element_blank(),
-        legend.spacing = unit(1, 'cm'),
+        legend.key.spacing.y = unit(0.2, 'cm'),
         legend.position = 'bottom',
-        legend.direction = 'vertical')
+        legend.direction = 'vertical'
+                                  )
 
 #### patch ####
-patch.plot <- (( p.pop.abs + p.vol.abs ) / (p.pop.ratio + p.vol.ratio) / p.energy ) &
-    theme(legend.position = 'bottom') 
-
+patch.plot <- (( p.pop.abs + p.vol.abs ) / (p.pop.ratio + p.vol.ratio) / p.energy ) 
 
 ggsave(paste0(outputDir,'pop_volumes_status_dwt_2015.png'), patch.plot,
-       height=20, width=18, units='in', dpi=300)
+       height=22, width=18, units='in', dpi=300)
 
 file.show(paste0(outputDir,'pop_volumes_status_dwt_2015.png'))
-
-
-# #### calculate some statistics for paper ####
-# # average volumes per source
-# 
-# #global average per status and source
-# # mean.ratio.access.world.desal <- mean(df.all.sources.regions$safe.acces.ratio.with.desal)
-# # mean.ratio.access.world.no.desal <- mean(df.all.sources.regions$safe.access.ratio.no.desal)
-# summary(df.all.sources.regions$safe.access.ratio.no.desal)
-# summary(df.all.sources.regions$safe.acces.ratio.with.desal)
-# 
-# sum(df.all.sources.regions$pop_total_untreated)
-# 
-# #!! global total demands to calculate global ratios !!
-# sum(df.all.sources.regions$vol_total) / 10^9
-# sum(df.all.sources.regions$volumes_total_conventional_sw) / 10^9 #+
-# sum(df.all.sources.regions$volumes_total_conventional_gw) / 10^9# +
-# sum(df.all.sources.regions$volumes_total_desalination) / 10^9
-# 
-# sum(df.all.sources.regions$volumes_total_basic) / 10^9
-# sum(df.all.sources.regions$volumes_total_basic_sw) / 10^9
-# sum(df.all.sources.regions$volumes_total_basic_gw) / 10^9
-# 
-# sum(df.all.sources.regions$volumes_total_untreated) / 10^9
-# sum(df.all.sources.regions$volumes_total_untreated_sw) / 10^9
-# sum(df.all.sources.regions$volumes_total_untreated_gw) / 10^9
-# 
-# #ratios !
-# sum(df.all.sources.regions$volumes_total_conventional_sw) /
-#   sum(df.all.sources.regions$vol_total)
-#   
-# sum(df.all.sources.regions$volumes_total_conventional_gw) / 
-#   sum(df.all.sources.regions$vol_total)
-# 
-# sum(df.all.sources.regions$volumes_total_untreated) / 10^9
-# sum(df.all.sources.regions$volumes_total_untreated_sw) / 10^9
-# sum(df.all.sources.regions$volumes_total_untreated_gw) / 10^9
-# 
-# sum(df.all.sources.regions$volumes_total_untreated) / 
-#   sum(df.all.sources.regions$vol_total)
-# 
-# mean(df.all.sources.regions$vol.ratio.conventional)
-# mean(df.all.sources.regions$vol.ratio.desalination)
-# mean(df.all.sources.regions$vol.ratio.conventional)
-# mean(df.all.sources.regions$vol.ratio.conventional)
-# 
-# #regional averages
-# # plot.df.vol.abs$mean.world <- apply(plot.df.vol.abs[,2:5], 1, mean)
-# # plot.df.vol.abs$sd.world <- apply(plot.df.vol.abs[,2:5], 1, sd)
-# # 
-# # plot.df.vol.ratio$mean.world <- apply(plot.df.vol.ratio[,2:5], 1, mean)
-# # plot.df.vol.ratio$sd.world <- apply(plot.df.vol.ratio[,2:5], 1, sd)
-# 
-# 
-# 
-# # # energy consumption
-# # sum(energy.regions.summarise$energy.total.mean.twh)
-# # sum(energy.regions.summarise$energy.total.high.twh)
-# # sum(energy.regions.summarise$energy.total.low.twh)
-# # 
-# # sum(modelled.energy$energy.total.low.ej)
-# # sum(modelled.energy$energy.total.high.ej)
-# # 
-# # sum(modelled.energy$energy.sw.low)
-# # sum(modelled.energy$energy.sw.high)
-# # sum(modelled.energy$energy.gw.low)
-# # sum(modelled.energy$energy.gw.high)
-# # 
-# # mean()
-# 
-# sum(energy.regions.summarise$energy.total.low.twh)
-# 
-# sum(energy.regions.summarise$energy.sw.low.twh)
-# sum(energy.regions.summarise$energy.sw.high.twh)
-# sum(energy.regions.summarise$energy.gw.low.twh)
-# sum(energy.regions.summarise$energy.gw.high.twh)
-
