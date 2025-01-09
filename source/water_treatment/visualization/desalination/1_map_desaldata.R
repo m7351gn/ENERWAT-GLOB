@@ -6,11 +6,11 @@ palette.feed.only <- c("#7FC97F", "#AFF80A","#BEAED4",
                        "#FDC086","#386CB0", "#F0027F")
 
 #### inputs ####
-inputDir <- '../../../../output/water_treatment/model/desalination/'
+inputDir <- '../../../../output/water_treatment/model/desalination/0_tech_categories/'
 outputDir <- '../../../../output/water_treatment/visualization/desalination/'
 
 desaldata <- read.csv(
-  paste0(inputDir, 'DesalDataEnergy_online.csv'))
+  paste0(inputDir, 'DesalDataEnergy_online_2019.csv'))
 
 wg <- map_data("world")
 

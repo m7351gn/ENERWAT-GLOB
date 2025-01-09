@@ -11,7 +11,7 @@ replaceMessage <- function(x, width = 80)
   message(x, appendLF = F)
 }
 
-inputDir  <- '../../../../output/water_treatment/model/desalination/'
+inputDir  <- '../../../../output/water_treatment/model/desalination/0_tech_categories/'
 outputDir <- '../../../../output/water_treatment/visualization/desalination/'
 
 source('fun_2_0_capacity_energy_per_tech_evolving_RO.R')

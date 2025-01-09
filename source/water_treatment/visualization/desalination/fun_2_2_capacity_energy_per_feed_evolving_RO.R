@@ -4,7 +4,7 @@ palette.feed.only <- c("#7FC97F", "#AFF80A","#BEAED4", "#FDC086",
                        "#386CB0", "#F0027F")
 
 #### load ####
-desalData.energy <- read.csv(paste0(inputDir, 'DesalDataEnergy_online.csv')) %>%
+desalData.energy <- read.csv(paste0(inputDir, 'DesalDataEnergy_online_2019.csv')) %>%
   mutate(Online.date=as.Date(paste(Online.date, 1, 1, sep = "-"))) 
 
 desalData.energy.RO <- vroom(
@@ -321,8 +321,6 @@ cum.energy.all.tech.frame <- data.frame(
   cum.energy.all.tech.low, cum.energy.all.tech.mean, cum.energy.all.tech.high) %>% 
   mutate(tech='Total')
 
-# colnames(cum.energy.all.tech.frame) <- c('Online.date', 'kwh.d', 'cum.kwh.d', 'cum.kwh.y', 'tech')
-
 colnames(cum.energy.all.tech.frame) <- colnames(Pure.E)
 
 #### make dataframes for plotting ####
@@ -407,7 +405,7 @@ twh.day.plot.feed <- ggplot(energy.plot.data, aes(x=Online.date, y=cum.twh.y.mea
         axis.text.x=element_blank(),
         axis.title.x=element_blank(),
         legend.position = 'bottom') +
-  guides(color=guide_legend(title="Feedwater type", ncol=2))x
+  guides(color=guide_legend(title="Feedwater type", ncol=2))
 
 
 #### ratios 
@@ -443,7 +441,6 @@ ratio.energy.plot.feed <- ggplot(energy.plot.data %>%
                                   size=14),
         axis.text.y=element_blank(),
         axis.title.y=element_blank()) 
-
 #patch together
 combined.cumulative.feed <- m3.day.plot.feed + twh.day.plot.feed
 

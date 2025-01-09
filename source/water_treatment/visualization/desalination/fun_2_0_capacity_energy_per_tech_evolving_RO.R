@@ -31,8 +31,6 @@ desal.thermal.ro.ed <- rbind(desalData.energy.thermal,
                              desalData.energy.RO.current, 
                              desalData.energy.ED)
 
-write.csv(desal.thermal.ro.ed, paste0(inputDir, 'DesalDataEnergy_online.csv'), 
-          row.names = F)
 
 
 #### filter by tech ####

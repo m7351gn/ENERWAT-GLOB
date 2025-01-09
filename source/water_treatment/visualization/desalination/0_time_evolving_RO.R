@@ -12,7 +12,6 @@ dir.create(outputDir, recursive = T, showWarnings = F)
 
 DesalData <- read.csv(paste0(inputDir, 'DesalData_2019_ID_renamed_countries.csv')) 
 
-
 #### filter #### 
 desal.filtered <- DesalData %>% 
   mutate(Online.date=as.Date(paste(Online.date, 1, 1, sep = "-"))) %>% 
@@ -68,16 +67,22 @@ colnames(year.vect) <- c('year.index','Year')
 
 #points to fit
 points.literature <- read.csv(paste0(
-  inputDir, 'RO_time_evolving_points_literature.csv')) %>% 
+  inputDir, 'RO_time_evolving_points_literature.csv')) 
+
+points.literature$Source[
+  points.literature$Source == " Elimelech & Philip (2011) - SWRO (Fit)"
+] <- " Elimelech and Philip (2011) - SWRO (Fit)"
+
+points.literature <- points.literature %>% 
   mutate(Year=as.Date(paste(Year, 1, 1, sep = "-"))) %>% 
   inner_join(., year.vect) %>% 
   mutate(Source = factor(
-    Source, levels=c(" Elimelech & Philip (2011) - SWRO (Fit)",  
+    Source, levels=c(" Elimelech and Philip (2011) - SWRO (Fit)",  
                      " Liu et al. (2016) - SWRO",
                      " Liu et al. (2016) - BWRO")))
 
 points.elimelech <- points.literature %>% 
-  filter(Source == " Elimelech & Philip (2011) - SWRO (Fit)")
+  filter(Source == " Elimelech and Philip (2011) - SWRO (Fit)")
 
 ####-------fit exponential decay model-------####
 # exponential decay with lower asymptote = 1.06 ? or 2?
@@ -179,11 +184,13 @@ p.ribbon.log <- ggplot(points.literature) +
 patch.p <- p.ribbon + p.ribbon.log +
   plot_layout(guides='collect') &
   theme(legend.justification = 'center',
-        legend.title = element_text(hjust=0.5, size=18),
+        legend.title = element_text(margin = margin(b = 10), hjust=0.5, size=18),
         legend.text = element_text(size=16),
         legend.position="bottom",
         legend.direction = 'vertical',
-        legend.spacing= unit(2.5, 'cm'))
+        legend.key.spacing.y = unit(0.2, 'cm'),
+        legend.spacing.y = unit(1, "cm"))
+
 
 #### add plant-wide uncertainties after plotting #### 
 energy.data <- plot.data
@@ -230,7 +237,7 @@ energy.data$Prediction[energy.data$Feedwater == 'Brine'] <-
 energy.data$Upper[energy.data$Feedwater == 'Brine'] <-
   energy.data$Upper[energy.data$Feedwater == 'Brine'] + 6.7
 
-#### save things ####
+# #### save things ####
 ggsave(paste0(outputDir, 'RO_evolving_model.png'), patch.p,
        height=7, width=12, units='in', dpi=300)
 

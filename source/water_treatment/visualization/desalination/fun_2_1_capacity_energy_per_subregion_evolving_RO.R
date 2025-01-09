@@ -4,7 +4,7 @@ palette.subr.only <- c('#332288', '#117733', '#44AA99',
                        '#88CCEE', '#DDCC77', '#CC6677', '#AA4499', '#882255')
 
 #### load ####
-desalData.energy <- read.csv(paste0(inputDir, 'DesalDataEnergy_online.csv')) %>%
+desalData.energy <- read.csv(paste0(inputDir, 'DesalDataEnergy_online_2019.csv')) %>%
   mutate(Online.date=as.Date(paste(Online.date, 1, 1, sep = "-"))) 
 
 desalData.energy.RO <- vroom(
@@ -14,7 +14,6 @@ desalData.energy.RO <- vroom(
   filter(!grepl('Construction', Plant.status)) %>%  
   filter(!grepl('Decommissioned', Plant.status)) %>% 
   filter(!grepl('Mothballed', Plant.status)) 
-
 
 #### filter by subregion #### 
 #Middle East / North Africa
@@ -146,6 +145,8 @@ WE.C <- WE %>%
 cum.capacity.all.subregions <- EAP.C$cum.m3.d + EECA.C$cum.m3.d +
   LAC.C$cum.m3.d + MENA.C$cum.m3.d + NAM.C$cum.m3.d +
   SAS.C$cum.m3.d + SSA.C$cum.m3.d + WE.C$cum.m3.d
+
+
 
 #### calculate energy evolving per subregion for RO ####
 #calculate cumulative per subregion
@@ -472,12 +473,10 @@ m3.day.plot.subr <- ggplot(capacity.plot.data, aes(x=Online.date, y=cum.m3.y / 1
         axis.text.x=element_blank(),
         axis.title.x=element_blank()) +
   guides(color=guide_legend(title="Subregion", ncol=3))
-# m3.day.plot.subr
 
 
 twh.day.plot.subr <- ggplot(energy.plot.data, aes(x=Online.date, y=cum.twh.y.mean, 
                                                   color=subregion)) +
-  # geom_area() +
   geom_line(linewidth=1.2) +
   geom_ribbon(aes(x=Online.date, ymin=cum.twh.y.low, ymax=cum.twh.y.high, fill=subregion),
               alpha=0.4, inherit.aes=F, show.legend=F) +
@@ -494,7 +493,6 @@ twh.day.plot.subr <- ggplot(energy.plot.data, aes(x=Online.date, y=cum.twh.y.mea
         axis.title.x=element_blank(),
         legend.position = 'bottom') +
   guides(color=guide_legend(title="Subregion", ncol=3))
-# twh.day.plot.subr
 
 ratio.capacity.plot.subr <- ggplot(capacity.plot.data %>%
                                      filter(!grepl('Total',subregion)),
@@ -503,7 +501,6 @@ ratio.capacity.plot.subr <- ggplot(capacity.plot.data %>%
   geom_line(linewidth=1.2) +
   xlab('\nYear') +
   ylab('Ratio')+
-  # scale_y_continuous(sec.axis = sec_axis(~.*0.0036, name='EJ/year\n')) +
   ggtitle('\nCapacity share') +
   scale_color_manual(values=palette.subr.only, guide="none") +
   theme_light() +
@@ -522,14 +519,15 @@ ratio.energy.plot.subr <- ggplot(energy.plot.data %>%
   theme(plot.title = element_text(hjust = 0.5, size=14),
         axis.text.y=element_blank(),
         axis.title.y=element_blank()) 
-# ratio.energy.plot.subr
 
 # 
 combined.cumulative.subr <- m3.day.plot.subr + twh.day.plot.subr
+
 # combined_cumulative
 combined.ratios.subr <- (ratio.capacity.plot.subr + 
                            plot_spacer() + ratio.energy.plot.subr) +
   plot_layout(widths = c(4, 0.38 ,4 ))
+
 # combined_ratios
 combined.all.subr <- (combined.cumulative.subr / combined.ratios.subr) +
   plot_annotation('Subregions\n',
@@ -537,4 +535,3 @@ combined.all.subr <- (combined.cumulative.subr / combined.ratios.subr) +
   plot_layout(guides = 'collect') &
   theme(plot.title = element_text(hjust= 0.5, face='bold'),
         legend.position="bottom")
-# combined.all.subr
