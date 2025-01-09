@@ -127,7 +127,7 @@ density.plot.volumes <- ggplot(data = modelled.active.plants,
   xlab('Hydrowaste') +
   ylab('Modelled') +
   theme_light() +
-  labs(title = "Treated wastewater volumes by plant (km<sup>3</sup>)", 
+  labs(title = "Treated wastewater volumes by plant (km<sup>3</sup> y<sup>-1</sup>)", 
        subtitle = "Global") +
   theme(plot.title=element_markdown(size=26, hjust=0.5),
         plot.subtitle=element_text(size=20, hjust=0.5),
@@ -137,6 +137,7 @@ density.plot.volumes <- ggplot(data = modelled.active.plants,
         legend.position = 'None') +
   scale_x_continuous(labels = formatterlog10, breaks = scales::pretty_breaks(n = 5)) +
   scale_y_continuous(labels = formatterlog10, breaks = scales::pretty_breaks(n = 5)) 
+# density.plot.volumes
 
 density.plot.population <- ggplot(data = modelled.active.plants, 
                                   aes(x = log10(POP_SERVED), y = log10(population_5arcmin))) +

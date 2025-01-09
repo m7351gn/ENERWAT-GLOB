@@ -45,8 +45,6 @@ data.status.plot <- inner_join(og.data.status, model.data.status) %>%
                                  STATUS.DB == 'Operational' & 
                                    STATUS.MODEL == 'Operational' ~ 'Reported operational / Modelled operational'))
 
-
-
 nrow(data.status.plot %>% filter(STATUS.MODEL == 'Operational'))
 nrow(data.status.plot %>% filter(STATUS.MODEL == 'Offline'))
 
@@ -78,7 +76,6 @@ wwtp.status.plot <- ggplot()+
         legend.key.width = unit(1.7, "cm"),
         plot.title = element_text(hjust = 0.5, size = 24)) +
   guides(fill=guide_legend(title="Status", ncol=2, override.aes = list(size = 3), title.position="top"))
-
 
 ggsave(paste0(outputDir, 'wwtp_status.png'), wwtp.status.plot,
        height=9, width=12, units='in', dpi=300, bg='white')

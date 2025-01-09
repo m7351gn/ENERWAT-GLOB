@@ -80,7 +80,6 @@ colors <- c("#7FC97F", "#AFF80A","#BEAED4", "#FDC086",
 hw.palette.small <- c("#386CB0", "#F0027F", '#FE6100', '#FFB000', #small plants
                       '#88CCEE', '#DDCC77', '#CC6677', '#AA4499') #large plants (for legend)
 hw.palette.large <- c('#88CCEE', '#DDCC77', '#CC6677', '#AA4499')
-
 hydrowaste.small.plot <- ggplot()+
   geom_map(
     data = wg, map = wg,
@@ -167,9 +166,9 @@ pp.with.volumes <- (hydrowaste.small.plot / hydrowaste.large.plot) + #/ pop.plot
         legend.text = element_text(size=14),
         plot.title = element_text(size = 20, hjust = 0.5))
   
-
+# # 
 ggsave(paste0(outputDir,'wwt_plants.png'), pp.with.volumes,
        height=13, width=12, units='in', dpi=300, bg='white')
-
+#
 file.show(paste0(outputDir,'wwt_plants.png'))
 

@@ -44,7 +44,7 @@ volumes.plot <- ggplot()+
              shape = 22, 
              size = 0.5, stroke=0) +
   scale_fill_viridis(option = 'G', na.value = 'transparent',
-                     name = 'km<sup>3</sup>', 
+                     name = 'km<sup>3</sup> y<sup>-1</sup>', 
                      trans = 'log10') +
   scale_color_viridis(option = 'G', na.value = 'transparent',
                       guide = 'none', trans = 'log10') +
@@ -62,7 +62,6 @@ volumes.plot <- ggplot()+
         plot.title = element_text(size = 20, hjust = 0.5))
 
 # plot population 2015
-# population.2015.for.plot
 pop.plot.all <- ggplot()+
   geom_map(
     data = wg, map = wg,
@@ -115,9 +114,9 @@ pop.plot.cut <- ggplot()+
 pp.with.volumes <- (volumes.plot / pop.plot.cut) 
   
   
-
+# # 
 ggsave(paste0(outputDir,'pop_vol.png'), pp.with.volumes,
        height=13, width=12, units='in', dpi=300, bg='white')
-
+#
 file.show(paste0(outputDir,'pop_vol.png'))
 

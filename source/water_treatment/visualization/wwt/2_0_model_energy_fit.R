@@ -18,6 +18,9 @@ tech.count <- longo.data %>%
 #fit mlr using log
 mlr.model.ro <- lm(log(Total.electricity.consumption..kWh.d.) ~ 
                      log(Average.flowrate..m3.d.) +  log(Influent..COD..g.d),
+                     # log(Influent..COD..g.d) + log(Effluent..COD..g.d),
+                     # log(Influent..COD..g.d) + COD..removed..ratio,
+                     # COD..removed..g.d,
                    data=longo.data)
 summary(mlr.model.ro)$coef
 
@@ -86,6 +89,8 @@ combined <- ( fit.plot.countries + fit.plot.tech ) +
         legend.spacing= unit(5.5, 'cm'),
         plot.title=element_text(hjust=0.5),
         legend.key.size = unit(2,"line"))
+
+#save
 
 ggsave(paste0(outputDir,'log_mlr_wwt.png'), combined,
        height=10, width=13, units='in', dpi=300)
