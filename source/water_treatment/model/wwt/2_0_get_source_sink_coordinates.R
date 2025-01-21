@@ -66,6 +66,12 @@ for(hybas_continent in seq(1, length(hybas_continents))){
     flows.df <- rbind(flows.same.catchment, flows.downstream) %>% 
       filter(cell_ID_sink != 0)
     
+    # #get wastewater pixels that were not assigned to a plant
+    # not.assigned.wastewater.pixels <- rbind(flows.same.catchment, flows.downstream) %>% 
+    #   filter(cell_ID_sink == 0) %>% 
+    #   select(cell_ID_source) %>% 
+    #   rename(cell_ID = cell_ID_source)
+    
     #source lat, lon
     cell.id.source <- as.data.frame(flows.df$cell_ID_source)
     colnames(cell.id.source) <- 'cell_ID'

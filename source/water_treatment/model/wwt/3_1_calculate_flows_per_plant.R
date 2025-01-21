@@ -43,6 +43,10 @@ cell.id.volumes <- modelled.flows %>%
 
 sum(cell.id.volumes$volume.jones)
 
+# #check difference between modelled and cut at 50 km
+# sum(modelled.flows$wwtv)
+# sum(cell.id.volumes$volume.jones)
+
 #find cell ids that contain more than one plant
 hydrowaste.raw.multiple <- hydrowaste.raw %>% 
   group_by(pcrglobwb_cellID) %>% 
@@ -127,6 +131,15 @@ for(id in seq(1, nrow(cell.id.multiple))){
 
 hydrowaste.raw.multiple.flows <- do.call(rbind, hydrowaste.raw.flows.list)
 
+sum(hydrowaste.raw.multiple.flows$WASTE_DIS_KM3_Y)
+sum(hydrowaste.raw.multiple.flows$flow_5arcmin)
+sum(hydrowaste.raw.multiple.flows$POP_SERVED)
+sum(hydrowaste.raw.multiple.flows$population_5arcmin)
+
+
+
+
+
 
 #### 1.2. assign volumes and populWASTE_DIS_KM3_Y#### 1.2. assign volumes and population when only one plant in a pixel
 cell.id.single <- cell.id.volumes[
@@ -157,6 +170,11 @@ hydrowaste.raw.modelled.flows <- rbind(hydrowaste.raw.single.flows,
 
 write.csv(hydrowaste.raw.modelled.flows, paste0(inputDirFlows, 'wwtp_modelled_flows.csv'),
           row.names = F)
+
+sum(hydrowaste.raw.modelled.flows$WASTE_DIS_KM3_Y) 
+sum(hydrowaste.raw.modelled.flows$flow_5arcmin) 
+sum(hydrowaste.raw.modelled.flows$POP_SERVED, na.rm = T)
+sum(hydrowaste.raw.modelled.flows$population_5arcmin)
 
 
 #### 4. get plants that are modelled without any wastewaters (empty) ####

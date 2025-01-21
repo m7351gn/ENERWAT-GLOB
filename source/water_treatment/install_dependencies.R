@@ -4,10 +4,13 @@ ipak <- function(pkg){
     install.packages(new.pkg, repos='http://cran.us.r-project.org')
 }
 
-packages <- c("tidyverse", "vroom", "openxlsx", "reshape2",
-              "geosphere", "FNN", "rnaturalearth", 
-              "terra", "tidyterra", "sf", "stars", "viridis",
-              "ggpointdensity", "patchwork", "ggthemes", "ggtext",
-              "pacman", "installr", "parallel")
+packages <- c("dplyr", "vroom", "reshape2", "data.table",
+              "tidyr", "stringr", "forcats",
+              "drc",
+              "FNN", "terra", "geosphere", 
+              "parallel",
+              "ggplot2", "patchwork", "cowplot", "grid", "gridExtra", "ggpointdensity",
+              "viridis", "RColorBrewer", "ggtext", "ggthemes"
+              )
 
 ipak(packages)

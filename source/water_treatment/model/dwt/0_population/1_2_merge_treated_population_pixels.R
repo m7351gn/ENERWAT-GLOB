@@ -51,6 +51,9 @@ vroom_write(treated.pop.df, paste0(inputDir, 'treated_population_BASIC.csv'), ',
 vroom_write(untreated.pop.df, paste0(inputDir, 'untreated_population_BASIC.csv'), ',')
 
 
+
+
+
 #### WORLD BANK #### AQUASTAT
 
 #### read files #### 

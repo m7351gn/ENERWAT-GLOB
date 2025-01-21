@@ -30,6 +30,11 @@ gdp.data.5arcmin <- vroom(paste0(inputDirWorld, 'gdp_ppp_1km_chen2022_to_5arcmin
                select(cell_ID, Country)) %>% 
   filter(!is.na(Country))
 
+# sum(population.data.5arcmin$pop_2015_total)
+# sum(population.data.5arcmin$pop_2015_urban)
+# sum(population.data.5arcmin$pop_2015_rural)
+# sum(gdp.data.5arcmin$GDP_total_2015)
+
 
 #### water access and filtered cell IDs 
 

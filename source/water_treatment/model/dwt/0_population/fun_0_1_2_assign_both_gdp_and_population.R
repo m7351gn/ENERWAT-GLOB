@@ -27,6 +27,15 @@ both.full.df.pop <- population.5arcmin.matching %>%
   filter(Country %in% countries.loop.both)
 
 
+# sum(unassigned.gdp.when.both$GDP_total_2015)
+# sum(unassigned.pop.when.both$pop_total)
+# sum(unassigned.pop.when.both$pop_rural)
+# sum(unassigned.pop.when.both$pop_urban)
+# 
+# sum(unassigned.pop.when.both$pop_total) + sum(countries.both.to.assign.df$pop_total)
+# sum(both.full.df.pop$pop_total)
+
+
 #### processing per country ####
 countries.both.assigned.list <- list()
 pop.to.remove.list <- list()
@@ -36,6 +45,7 @@ gdp.to.remove.list <- list()
 #### BOTTLENECK ####
 for(idx in seq(1, length(countries.loop.both))){
 
+  # idx = 1  
   
   replaceMessage(paste0('Country ', idx, '/', length(countries.loop.both),
                         ': ', countries.loop.both[idx]))

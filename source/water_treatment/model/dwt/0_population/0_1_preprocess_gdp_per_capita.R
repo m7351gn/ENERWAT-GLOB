@@ -89,6 +89,37 @@ population.5arcmin.matching <- population.data.5arcmin %>%
 gdp.5arcmin.matching <- gdp.data.5arcmin %>% 
   filter(Country %in% common.countries.in.all.data)
 
+# 
+# #### check sums after filters -> 174 countries -> overall numbers to cite in methods :0
+# ## water stats
+# sum(water.access.statistics.matching$pop_total)
+# sum(water.access.statistics.matching$pop_urban)
+# sum(water.access.statistics.matching$pop_rural)
+# 
+# #world bank : lacking access to safely managed drinking water
+# sum(water.access.statistics.matching$access_pop_total_wb)
+# sum(water.access.statistics.matching$access_pop_urban_wb)
+# sum(water.access.statistics.matching$access_pop_rural_wb)
+# 
+# #aquastat: lacking basic water services (clean source of water within 30 minutes walk)
+# sum(water.access.statistics.matching$access_pop_total_aquastat)
+# sum(water.access.statistics.matching$access_pop_urban_aquastat)
+# sum(water.access.statistics.matching$access_pop_rural_aquastat)
+# 
+# #lacking water services according to the two definitions
+# sum(water.access.statistics.matching$pop_total) - 
+#   sum(water.access.statistics.matching$access_pop_total_wb)
+# 
+# sum(water.access.statistics.matching$pop_total) - 
+#   sum(water.access.statistics.matching$access_pop_total_aquastat)
+# 
+# ## population total at 5arcmin -> should match with water access statistics total
+# sum(population.5arcmin.matching$pop_total)
+# sum(population.5arcmin.matching$pop_urban)
+# sum(population.5arcmin.matching$pop_rural)
+# 
+# ## total gdp at 5 arcmin -> to be preprocessed here to match with population 1:1
+# sum(gdp.5arcmin.matching$GDP_total_2015) # million US dollars
 
 #### processing begins ####
 # match gdp with population at 5arcmin
@@ -144,6 +175,8 @@ sum(countries.ok.first.try.df$pop_2015_total) /
 
 vroom_write(countries.ok.first.try.df, 
             paste0(outputDirTemp, '00_countries_matching_first_try.csv'), ',')
+
+
 
 
 #### get remaining countries

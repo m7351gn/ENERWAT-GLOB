@@ -32,6 +32,8 @@ hybas_levels <- c('02','03','04','05','06','07','08','09','10')
 
 
 #### loop  #### 
+# common.cell.ids.continent <- list()
+
 for(hybas_continent in seq(1, length(hybas_continents))){
 
   continent <- hybas_continents[hybas_continent]

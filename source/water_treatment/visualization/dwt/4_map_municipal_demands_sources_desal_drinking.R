@@ -114,7 +114,6 @@ sw.plot <- ggplot() +
   ) +
   theme_map() +
   ggtitle('C. Surface water') +
-  # xlim(-180,180)
   ylim(-55,80)+
   guides(fill = guide_colourbar(title.position="top")) +
   theme(legend.title = element_markdown(hjust=0.5, size=18),

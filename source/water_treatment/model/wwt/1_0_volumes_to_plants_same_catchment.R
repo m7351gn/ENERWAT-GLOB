@@ -26,6 +26,7 @@ continent.assigned.stats.list <- list()
 for(hybas_continent in seq(1, length(hybas_continents))){
   
   #select continent
+  # hybas_continent = 1
   continent <- hybas_continents[hybas_continent]
   
   flows.same.catchment.level.list <- list()
@@ -36,6 +37,7 @@ for(hybas_continent in seq(1, length(hybas_continents))){
     for(level in seq(1, length(hybas_levels))){
       
     #select level
+    # level = 9
     lev <- hybas_levels[level]
     
     #get plants and volume for level 
@@ -54,6 +56,7 @@ for(hybas_continent in seq(1, length(hybas_continents))){
     for(country.idx in seq(1, length(countries.level))){
       
       #select country
+      # country.idx = 1
       country.id <- countries.level[country.idx]
       
       #get plants and volumes for selected country
@@ -103,6 +106,7 @@ for(hybas_continent in seq(1, length(hybas_continents))){
                  ))
         
         #select catchment
+        # cc = 1
         catchment <- shared.catchments[cc]
   
         #get cell id of plants and volumes in selected shared catchment

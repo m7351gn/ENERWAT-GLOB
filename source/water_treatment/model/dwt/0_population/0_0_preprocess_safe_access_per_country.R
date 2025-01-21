@@ -1,6 +1,5 @@
 library(dplyr)
 library(vroom)
-library(installr)
 
 inputDir <- '../../../../../input/water_treatment/dwt/'
 inputDirWorld <- '../../../../../input/global_data/'
@@ -91,6 +90,14 @@ global.access.2015 <- inner_join(wb.access.2015, aquastat.rural.urban.df) %>%
          access_pop_rural_aquastat = access_pop_total_aquastat * access_ratio_rural,
          access_pop_urban_wb = access_pop_total_wb * access_ratio_urban,
          access_pop_rural_wb = access_pop_total_wb * access_ratio_rural)
+  
+  
+# #checksums
+# sum(global.access.2015$pop_total)
+# sum(global.access.2015$access_pop_total_aquastat)
+# sum(global.access.2015$pop_total) - sum(global.access.2015$access_pop_total_aquastat)
+# sum(global.access.2015$access_pop_total_wb)
+# sum(global.access.2015$pop_total) - sum(global.access.2015$access_pop_total_wb)
 
 colnames(global.access.2015)[2] <- 'safe.access.wb.filled'
 

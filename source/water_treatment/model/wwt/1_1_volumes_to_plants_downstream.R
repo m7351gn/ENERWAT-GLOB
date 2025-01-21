@@ -1,5 +1,4 @@
 library(dplyr)
-library(sf)
 library(FNN)
 
 replaceMessage <- function(x, width = 80)
@@ -160,7 +159,10 @@ for(hybas_continent in seq(1, length(hybas_continents))){
           #get first downstream catchment dataframe
           downstream.catchment <- hybas.level.shp[
             hybas.level.shp$HYBAS_ID == downstream.catchment.hybas.id,]
-          
+        
+          # print(cell.id.source$PFAF_ID)
+          # print(downstream.catchment$PFAF_ID)
+        
           
           #------------- cases -------------#
           

@@ -12,6 +12,11 @@ checksum.unassigned.pop <- population.5arcmin.matching %>%
   filter(Country %in% countries.loop.pop.only) %>%
   filter(!cell_ID %in% countries.only.pop.to.assign.df$cell_ID) 
 
+# %>% 
+#   mutate(density_km2_total = pop_total / (cell.area.5arcmin / 10^6),
+#          density_km2_urban = pop_urban / (cell.area.5arcmin / 10^6),
+#          density_km2_rural = pop_rural / (cell.area.5arcmin / 10^6))
+
 sum(checksum.unassigned.pop$pop_2015_total)
 sum(checksum.unassigned.pop$pop_2015_urban)
 sum(checksum.unassigned.pop$pop_2015_rural)
@@ -22,6 +27,9 @@ sum(population.5arcmin.matching$pop_2015_total) -
 sum(checksum.unassigned.pop$pop_2015_total) +
   sum(countries.only.pop.to.assign.df$pop_2015_total)
 
+# summary(checksum.unassigned.pop$density_km2_total)
+# summary(checksum.unassigned.pop$density_km2_urban)
+# summary(checksum.unassigned.pop$density_km2_rural)
 
 countries.to.remove <- data.frame(countries.loop.pop.only)
 colnames(countries.to.remove) <- 'Country'

@@ -54,6 +54,7 @@ global.desal.demands.pop <- global.allocated.drinking.desal %>%
   inner_join(population.treatment.5arcmin.2015 %>% 
                select(cell_ID, pop_2015_total, pop_2015_urban, 
                       pop_2015_rural, treatment))
+# sum(global.desal.dcountries.regions# sum(global.desal.demands.pop$demands.m3.2015)/10^9
 
 vroom_write(global.desal.demands.pop, 
             paste0(outputDir, 
