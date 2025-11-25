@@ -19,9 +19,9 @@ inputDirIBWT <-
 
 inputDir <- '../../../../output/water_abstraction/model/ibwt/0_elevation_profiles/'
 
-inputDirElevation <- paste0(inputDir, '1_ibwt_starting_points/')
+inputDirElevation <- paste0(inputDir, '1_segments/')
 
-outputDir <- paste0(inputDir, '2_elevation_with_infrastructure/')
+outputDir <- paste0(inputDir, '2_infrastructure/')
 dir.create(outputDir, recursive = T, showWarnings = F)
 
 

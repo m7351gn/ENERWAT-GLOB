@@ -20,9 +20,9 @@ inputDirIBWT <- paste0(inputDir, '0_elevation_profiles/Transfer_segments/')
 
 outputDir <- '../../../../output/water_abstraction/model/ibwt/0_elevation_profiles/'
 
-inputDirElevation <- paste0(outputDir, '0_elevation_natural/')
+inputDirElevation <- paste0(outputDir, '0_elevation/')
 
-outputDirPumping <- paste0(outputDir, '1_ibwt_starting_points/')
+outputDirPumping <- paste0(outputDir, '1_segments/')
 
 
 #### loop by country ####
@@ -109,6 +109,7 @@ for(i in seq(length(n.countries))){
       #get coordinates of infrastructure points (to be matched on transfer )
       coord.target <- cbind(segment.pumping.station$lon,
                             segment.pumping.station$lat)
+      
       
       #get coordinates of all segment pieces (destination match)
       coord.path <- cbind(segment.elevation.data$lon, 

@@ -1,5 +1,4 @@
 #### this script uses terra to extract the elevation of a dem along a vector line
-
 library(readxl)
 library(dplyr)
 library(terra)
@@ -20,7 +19,7 @@ inputDir <- '../../../../input/water_abstraction/ibwt/'
 inputDirDEM <- paste0(inputDir, '0_elevation_profiles/ASTER_dem/')
 inputDirIBWT <- paste0(inputDir, '0_elevation_profiles/Transfer_segments/')
 
-outputDir <- '../../../../output/water_abstraction/model/ibwt/0_elevation_profiles/0_elevation_natural/'
+outputDir <- '../../../../output/water_abstraction/model/ibwt/0_elevation_profiles/0_elevation/'
 dir.create(outputDir, showWarnings = F, recursive = T)
  
 #### load ####
@@ -122,6 +121,7 @@ for(i in seq(length(n.countries))){
       
       write.csv(profile.df,  paste0(outputDirTransfer, 'segment_', segment, '.csv'), row.names = F)
       
-   }
+   
+      }
+    }
   }
- }
